@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Operations Dashboard | AutoMind Diagnostics{% endblock %}
+{% block content %}
+<section class="command-dashboard operations">
+    <div class="container">
+        <div class="command-header admin">
+            <div><p class="eyebrow">Nationwide operations desk</p><h1>Service Dispatch Center</h1><p>Manage diagnostic cases, emergency demand and engineer assignments from one view.</p></div>
+            <div class="header-actions"><a class="button light" href="{% url 'parts_catalogue' %}">Parts catalogue</a><a class="button light" href="{% url 'diagnostic_file_library' %}">CBF / SMR-D / CFF</a><a class="button primary" href="{% url 'admin:index' %}">Admin panel</a></div>
+        </div>
+        <div class="metric-grid five">
+            <div class="metric"><span>Total requests</span><strong>{{ requests|length }}</strong></div>
+            <div class="metric alert-metric"><span>Emergencies</span><strong>{{ emergency_requests }}</strong></div>
+            <div class="metric accent"><span>Active</span><strong>{{ active_requests }}</strong></div>
+            <div class="metric"><span>Pending</span><strong>{{ pending_requests }}</strong></div>
+            <div class="metric"><span>Completed</span><strong>{{ completed_requests }}</strong></div>
+        </div>
+        <div class="dashboard-columns admin-columns">
+            <div class="panel jobs-panel">
+                <div class="panel-heading"><h2>Live request queue</h2><a href="{% url 'ecu_records' %}">Mercedes ECU storage</a></div>
+                <div class="job-list">
+                {% for job in requests %}
+                    <div class="job-item">
+                        <span class="priority {{ job.urgency }}"></span>
+                        <div><strong>{{ job.vehicle_registration_number }} - {{ job.customer.full_name }}</strong><small>{{ job.state }}, {{ job.city }} | {{ job.get_urgency_display }} | {{ job.assigned_engineer|default:"Unassigned" }}</small></div>
+                        <span class="badge {{ job.status }}">{{ job.get_status_display }}</span>
+                        <a class="queue-action" href="{% url 'assign_request' job.pk %}">Assign</a>
+                    </div>
+                {% empty %}<div class="empty-state"><h3>Queue is clear</h3><p>No customer requests have been submitted.</p></div>{% endfor %}
+                </div>
+            </div>
+            <aside class="panel approvals-card">
+                <p class="eyebrow">Engineer network</p>
+                <div class="network-number">{{ approved_engineers }}</div>
+                <p class="muted">approved engineers available in the system</p>
+                {% if pending_engineers %}
+                <div class="approval-alert"><strong>{{ pending_engineers|length }}</strong> ID verification application(s) awaiting approval</div>
+                <div class="verification-queue">
+                {% for engineer in pending_engineers %}
+                    <a href="{% url 'engineer_verification_review' engineer.pk %}"><strong>{{ engineer.full_name }}</strong><small>{{ engineer.get_id_type_display }} | {{ engineer.state }}</small></a>
+                {% endfor %}
+                </div>
+                {% endif %}
+                <a class="button secondary full" href="{% url 'admin:portal_engineerprofile_changelist' %}">Manage engineers</a>
+            </aside>
+        </div>
+    </div>
+</section>
+{% endblock %}

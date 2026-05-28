@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Update Availability | AutoMind Diagnostics{% endblock %}
+{% block content %}
+<section class="form-page">
+    <div class="form-card narrow">
+        <p class="eyebrow">Engineer availability</p>
+        <h1>Assignment status</h1>
+        <p class="muted">Turn availability off when you cannot accept new work. Existing assigned jobs remain accessible.</p>
+        <form method="post" class="styled-form">
+            {% csrf_token %}{{ form.as_p }}
+            <button class="button primary full" type="submit">Save availability</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

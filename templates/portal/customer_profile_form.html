@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Vehicle Profile | AutoMind Diagnostics{% endblock %}
+{% block content %}
+<section class="form-page">
+    <div class="form-card">
+        <p class="eyebrow">Optional profile details</p>
+        <h1>Add your vehicle information</h1>
+        <p class="muted">You can skip this until you need service. Saved information helps pre-fill your repair requests.</p>
+        <form method="post" class="styled-form grid-form">
+            {% csrf_token %}{{ form.non_field_errors }}
+            {% for field in form %}
+                <label>{{ field.label }}{{ field }}{{ field.errors }}{% if field.help_text %}<small>{{ field.help_text|safe }}</small>{% endif %}</label>
+            {% endfor %}
+            <button class="button primary full-row" type="submit">Save vehicle profile</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

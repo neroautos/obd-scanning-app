@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Automotive Diagnostics & Technical Support | AutoMind Diagnostics{% endblock %}
+{% block content %}
+<section class="service-hero">
+    <div class="container service-hero-grid">
+        <div class="service-hero-copy">
+            <p class="eyebrow">Automotive diagnostic support network</p>
+            <h1>Advanced vehicle diagnostics and technical support services</h1>
+            <p class="lead">AutoMind connects vehicle owners with approved automobile engineers for fault diagnosis, Mercedes ECU records, coding references and accountable service support across Nigeria.</p>
+            <div class="actions">
+                <a class="button primary" href="{% url 'request_help' %}">Request diagnostic help</a>
+                <a class="button hero-outline" href="{% url 'vin_decoder' %}">Decode a VIN</a>
+            </div>
+            <div class="hero-trust">
+                <span>Engineer verification</span>
+                <span>Secure technical files</span>
+                <span>Status tracking</span>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="quick-service-band">
+    <div class="container quick-service-grid">
+        <div class="service-showcase-title">
+            <p class="eyebrow">Specialist services</p>
+            <h2>Mercedes and multi-brand diagnostic workflow</h2>
+        </div>
+        <a class="showcase-service" href="{% url 'request_help' %}">
+            <strong>Vehicle fault support</strong><span>Submit symptoms and route work to an approved engineer.</span>
+        </a>
+        <a class="showcase-service" href="{% url 'vin_decoder' %}">
+            <strong>VIN and parts intelligence</strong><span>Decode vehicle identity and match registered requirements.</span>
+        </a>
+        <a class="showcase-service" href="{% url 'diagnostic_file_library' %}">
+            <strong>ECU coding file center</strong><span>CBF, SMR-D and CFF compatibility resources.</span>
+        </a>
+    </div>
+</section>
+<section class="credibility-strip">
+    <div class="container credibility-grid">
+        <div><strong>Nationwide</strong><span>Customer support access</span></div>
+        <div><strong>Verified</strong><span>Engineer approval process</span></div>
+        <div><strong>Mercedes ECU</strong><span>Coding and flash records</span></div>
+        <div><strong>Secure</strong><span>Workshop case tracking</span></div>
+    </div>
+</section>
+<section id="services" class="landing-section services-section">
+    <div class="container">
+        <div class="landing-heading">
+            <p class="eyebrow">What we offer</p>
+            <h2>Diagnostic services built around real workshop needs</h2>
+            <p>From customer fault reports to technical ECU documentation, each service connects to a managed workflow inside your account.</p>
+        </div>
+        <div class="offer-grid">
+            <article class="offer-card">
+                <span class="service-index">01</span>
+                <h3>Remote diagnostic support</h3>
+                <p>Submit your vehicle issue, attach a photo or video and track the assigned engineer through completion.</p>
+                <a href="{% url 'request_help' %}">Start a request</a>
+            </article>
+            <article class="offer-card">
+                <span class="service-index">02</span>
+                <h3>ECU coding records</h3>
+                <p>Maintain Mercedes ECU hardware, software, flash dates, coding backup references and technician notes.</p>
+                <a href="{% url 'ecu_records' %}">View ECU section</a>
+            </article>
+            <article class="offer-card">
+                <span class="service-index">03</span>
+                <h3>VIN intelligence</h3>
+                <p>Validate a VIN, identify the vehicle and retrieve registered compatible parts and technical file references.</p>
+                <a href="{% url 'vin_decoder' %}">Open VIN Decoder</a>
+            </article>
+            <article class="offer-card">
+                <span class="service-index">04</span>
+                <h3>Engineering file center</h3>
+                <p>Approved technicians store and review CBF, SMR-D and CFF files with ECU compatibility information.</p>
+                <a href="{% url 'diagnostic_file_library' %}">Open file center</a>
+            </article>
+        </div>
+    </div>
+</section>
+<section class="support-highlight">
+    <div class="container support-highlight-grid">
+        <div>
+            <p class="eyebrow">Technical support</p>
+            <h2>Engineers you can assign with confidence</h2>
+            <p>Engineer applications require identity verification and admin approval before dispatch access is granted. Service requests remain traceable from assignment to completion.</p>
+            <a class="button primary" href="{% url 'register_engineer' %}">Apply as an engineer</a>
+        </div>
+        <div class="benefit-list">
+            <div><strong>Approved engineers</strong><span>Identity submission and review before work allocation.</span></div>
+            <div><strong>Faster decisions</strong><span>VIN results, parts requirements and technical references together.</span></div>
+            <div><strong>Workshop history</strong><span>Service dates, costs, assigned engineer and work completed.</span></div>
+        </div>
+    </div>
+</section>
+<section id="resources" class="landing-section resources-section">
+    <div class="container">
+        <div class="landing-heading">
+            <p class="eyebrow">Professional resources</p>
+            <h2>Tools for modern automobile diagnostics</h2>
+        </div>
+        <div class="resource-grid">
+            <a class="resource-card" href="{% url 'vin_decoder' %}"><small>Vehicle identification</small><strong>VIN Decoder Center</strong><span>Vehicle data, required parts and technical references</span></a>
+            <a class="resource-card" href="{% url 'diagnostic_file_library' %}"><small>Mercedes programming</small><strong>CBF / SMR-D / CFF</strong><span>Secure technician-managed ECU file resources</span></a>
+            <a class="resource-card" href="{% url 'register_customer' %}"><small>Customer service</small><strong>Track a Repair Request</strong><span>Create an account with only email or phone</span></a>
+        </div>
+    </div>
+</section>
+<section class="journey-section">
+    <div class="container">
+        <div class="landing-heading">
+            <p class="eyebrow">Service process</p>
+            <h2>From car problem to confirmed repair progress</h2>
+        </div>
+        <div class="journey-grid">
+            <article><span>01</span><h3>Request support</h3><p>Describe the fault and share useful vehicle information.</p></article>
+            <article><span>02</span><h3>Engineer assignment</h3><p>Operations assigns an approved specialist to your job.</p></article>
+            <article><span>03</span><h3>Technical diagnosis</h3><p>Track updates and supporting diagnostic records securely.</p></article>
+            <article><span>04</span><h3>Service record</h3><p>Maintain workshop history and follow-up service dates.</p></article>
+        </div>
+    </div>
+</section>
+{% endblock %}

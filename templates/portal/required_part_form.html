@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Add Required Part | AutoMind Diagnostics{% endblock %}
+{% block content %}
+<section class="form-page">
+    <div class="form-card">
+        <p class="eyebrow">Parts catalogue</p>
+        <h1>Add a vehicle part requirement</h1>
+        <p class="muted">Use exact VIN for a part required on one vehicle, or set make/model and years to allow that part to appear for matching decoded vehicles.</p>
+        <form method="post" class="styled-form grid-form">
+            {% csrf_token %}{{ form.non_field_errors }}
+            {% for field in form %}
+                <label class="{% if field.name == 'notes' %}full-row{% endif %}">{{ field.label }}{{ field }}{{ field.errors }}{% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}</label>
+            {% endfor %}
+            <button class="button primary full-row" type="submit">Save required part</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

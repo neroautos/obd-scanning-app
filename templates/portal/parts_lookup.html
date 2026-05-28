@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}VIN Parts Lookup | AutoMind Diagnostics{% endblock %}
+{% block content %}
+<section class="parts-page">
+    <div class="container parts-hero">
+        <div>
+            <p class="eyebrow">Vehicle parts requirement lookup</p>
+            <h1>Find required parts by VIN</h1>
+            <p class="lead-dark">Enter the vehicle VIN. We identify the car through NHTSA, then show required parts recorded in the AutoMind catalogue for that VIN or compatible make, model and year.</p>
+        </div>
+        <div class="form-card parts-form">
+            <form method="post" class="styled-form">
+                {% csrf_token %}{{ form.non_field_errors }}
+                {% for field in form %}<label>{{ field.label }}{{ field }}{{ field.errors }}</label>{% endfor %}
+                <button class="button primary full" type="submit">Find required parts</button>
+            </form>
+        </div>
+    </div>
+    {% if decoded %}
+    <div class="container parts-results">
+        <div class="lookup-vehicle">
+            <div><p class="eyebrow">Identified vehicle</p><h2>{{ decoded.make|default:decoded.manufacturer }} {{ decoded.model|default:"" }} <span>{{ decoded.model_year }}</span></h2><p class="mono">{{ decoded.vin }}</p></div>
+            {% if decoded.api_available %}<span class="api-status online">Vehicle verified by NHTSA</span>{% else %}<span class="api-status offline">VIN valid; live vehicle details unavailable</span>{% endif %}
+        </div>
+        <div class="parts-guidance">Parts shown are requirements entered and confirmed in the AutoMind catalogue. Confirm the final order using manufacturer documentation before purchase or installation.</div>
+        <div class="part-list">
+            {% for part in parts %}
+            <article class="required-part">
+                <div class="requirement-tag {% if part.is_required %}needed{% endif %}">{% if part.is_required %}Required{% else %}Recommended{% endif %}</div>
+                <div class="part-main">
+                    <small>{{ part.get_category_display }}</small>
+                    <h3>{{ part.part_name }}</h3>
+                    <p class="mono">{{ part.part_number }}</p>
+                </div>
+                <div class="part-fitment">
+                    <span>Fits</span><strong>{{ part.compatible_make }} {{ part.compatible_model }}</strong>
+                    {% if part.year_from or part.year_to %}<small>{{ part.year_from|default:"Any" }} - {{ part.year_to|default:"Present" }}</small>{% endif %}
+                    {% if part.engine_or_variant %}<small>{{ part.engine_or_variant }}</small>{% endif %}
+                </div>
+                <div class="part-qty"><span>Qty</span><strong>{{ part.quantity }}</strong></div>
+            </article>
+            {% empty %}
+            <div class="panel empty-state"><h2>No registered parts found for this vehicle</h2><p>The car has been identified, but your catalogue does not yet contain required parts matching this VIN or model/year.</p></div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Required Parts Catalogue | AutoMind Diagnostics{% endblock %}
+{% block content %}
+<section class="file-library">
+    <div class="container">
+        <div class="library-hero parts-admin-hero">
+            <div><p class="eyebrow">Technician-managed fitment data</p><h1>Required Parts Catalogue</h1><p>Create part requirements by exact VIN or by compatible vehicle model and year. These entries power the customer-facing VIN parts lookup.</p></div>
+            <a class="button primary" href="{% url 'add_required_part' %}">Add required part</a>
+        </div>
+        <form class="library-search panel" method="get">
+            <input class="form-control" type="search" name="search" value="{{ search_query }}" placeholder="Search part number, name, vehicle model, VIN or variant">
+            <button class="button primary" type="submit">Search catalogue</button>
+        </form>
+        <div class="panel">
+            <div class="table-wrap"><table>
+                <thead><tr><th>Part</th><th>Category</th><th>Vehicle fitment</th><th>Year range</th><th>Requirement</th><th>Qty</th></tr></thead>
+                <tbody>
+                    {% for part in parts %}
+                    <tr><td><strong>{{ part.part_name }}</strong><small class="mono">{{ part.part_number }}</small></td><td>{{ part.get_category_display }}</td><td>{{ part.compatible_make }} {{ part.compatible_model }}{% if part.exact_vin %}<small class="mono">VIN: {{ part.exact_vin }}</small>{% endif %}</td><td>{{ part.year_from|default:"Any" }} - {{ part.year_to|default:"Present" }}</td><td>{% if part.is_required %}<span class="badge in_progress">Required</span>{% else %}<span class="badge assigned">Recommended</span>{% endif %}</td><td>{{ part.quantity }}</td></tr>
+                    {% empty %}<tr><td colspan="6" class="empty">No required parts have been registered.</td></tr>{% endfor %}
+                </tbody>
+            </table></div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Upload Diagnostic File | AutoMind Diagnostics{% endblock %}
+{% block content %}
+<section class="form-page library-upload">
+    <div class="form-card">
+        <p class="eyebrow">Diagnostic file library</p>
+        <h1>Upload CBF, SMR-D or CFF file</h1>
+        <p class="muted">Enter vehicle compatibility only when it is confirmed from your engineering source, ECU workflow or tested records. The system will attempt to display readable signatures found inside the uploaded file.</p>
+        <form method="post" enctype="multipart/form-data" class="styled-form grid-form">
+            {% csrf_token %}{{ form.non_field_errors }}
+            {% for field in form %}
+                <label class="{% if field.name == 'compatibility_notes' %}full-row{% endif %}">{{ field.label }}{{ field }}{{ field.errors }}{% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}</label>
+            {% endfor %}
+            <button class="button primary full-row" type="submit">Save to file library</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

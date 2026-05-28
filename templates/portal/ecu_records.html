@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Mercedes ECU Records | AutoMind Diagnostics{% endblock %}
+{% block content %}
+<section class="dashboard container">
+    <div class="dashboard-head">
+        <div><p class="eyebrow">Mercedes diagnostic storage</p><h1>ECU and coding records</h1></div>
+        <a class="button primary" href="{% url 'add_ecu_record' %}">New ECU record</a>
+    </div>
+    <div class="panel"><div class="table-wrap"><table><thead><tr><th>VIN / ECU</th><th>Hardware</th><th>Software</th><th>Tool</th><th>Flash date</th><th>Engineer</th><th>File</th></tr></thead><tbody>
+        {% for record in records %}<tr><td><span class="mono">{{ record.vin }}</span><small>{{ record.ecu_name }}</small></td><td>{{ record.ecu_hardware_number }}</td><td>{{ record.ecu_software_number }}</td><td>{{ record.get_tool_used_display }}</td><td>{{ record.flash_date|default:"-" }}</td><td>{{ record.engineer_assigned|default:"-" }}</td><td>{% if record.uploaded_file %}<a href="{% url 'download_ecu_file' record.pk %}">Download</a>{% else %}-{% endif %}</td></tr>
+        {% empty %}<tr><td colspan="7" class="empty">No Mercedes ECU records have been created.</td></tr>{% endfor %}
+    </tbody></table></div></div>
+</section>
+{% endblock %}

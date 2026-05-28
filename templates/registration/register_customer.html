@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Customer Registration | AutoMind Diagnostics{% endblock %}
+{% block content %}
+<section class="form-page">
+    <div class="form-card narrow signup-card">
+        <p class="eyebrow">Customer account</p>
+        <h1>Create an account</h1>
+        <p class="muted">Sign up with your email address or phone number. You can add vehicle details later.</p>
+        <form method="post" class="styled-form">
+            {% csrf_token %}{{ form.non_field_errors }}
+            {% for field in form %}
+                <label>{{ field.label }}{{ field }}{{ field.errors }}{% if field.help_text %}<small>{{ field.help_text|safe }}</small>{% endif %}</label>
+            {% endfor %}
+            <button class="button primary full" type="submit">Create account</button>
+        </form>
+        <p class="form-foot">Already registered? <a href="{% url 'login' %}">Sign in</a>.</p>
+    </div>
+</section>
+{% endblock %}

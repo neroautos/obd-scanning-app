@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}VIN Center | AutoMind Diagnostics{% endblock %}
+{% block content %}
+<section class="decoder-page vin-center">
+    <div class="container decoder-layout">
+        <div class="decoder-intro">
+            <p class="eyebrow">Unified vehicle intelligence</p>
+            <h1>One VIN search for the full diagnostic workflow</h1>
+            <p class="lead-dark">Identify a vehicle, view registered replacement parts, and check available CBF, SMR-D and CFF engineering references in one session.</p>
+            <div class="source-card">
+                <span class="pulse"></span>
+                <div><strong>Live identity plus AutoMind records</strong><small>NHTSA vPIC vehicle data with your managed parts and file library</small></div>
+            </div>
+            <p class="fine-print">NHTSA supplies vehicle identity details. Required parts and compatible engineering files below come from records confirmed and entered by your AutoMind team.</p>
+            <div class="catalog-note">
+                <p class="eyebrow">OEM part matching</p>
+                <h2>Built for your own Mercedes catalogue</h2>
+                <p>Verified technicians can register genuine part numbers by VIN, model and year in AutoMind. Matching records then appear in this single VIN search.</p>
+            </div>
+        </div>
+        <div class="form-card decoder-form">
+            <p class="eyebrow">Start here</p>
+            <h2>Enter one VIN</h2>
+            <form method="post" class="styled-form">
+                {% csrf_token %}{{ form.non_field_errors }}
+                {% for field in form %}
+                <label>{{ field.label }}{{ field }}{{ field.errors }}{% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}</label>
+                {% endfor %}
+                <button class="button primary full" type="submit">Search vehicle workspace</button>
+            </form>
+        </div>
+    </div>
+    {% if decoded %}
+    <div class="container result-panel">
+        <div class="result-head">
+            <div><p class="eyebrow">Vehicle result</p><h2 class="mono">{{ decoded.vin }}</h2></div>
+            {% if decoded.api_available %}<span class="api-status online">Live NHTSA result</span>{% else %}<span class="api-status offline">Local VIN validation only</span>{% endif %}
+        </div>
+        {% if not decoded.api_available %}
+        <div class="api-warning">The live public vehicle service could not be reached. Parts and file compatibility based on vehicle model cannot be matched until identity data is available.</div>
+        {% endif %}
+        <div class="vin-blocks">
+            <div><small>WMI</small><strong>{{ decoded.wmi }}</strong><span>Manufacturer identifier</span></div>
+            <div><small>VDS</small><strong>{{ decoded.vds }}</strong><span>Vehicle descriptor</span></div>
+            <div><small>VIS</small><strong>{{ decoded.vis }}</strong><span>Serial identifier</span></div>
+        </div>
+        <div class="spec-grid">
+            <div><small>Manufacturer</small><strong>{{ decoded.manufacturer }}</strong></div>
+            <div><small>Make / Model</small><strong>{{ decoded.make|default:"-" }} {{ decoded.model|default:"" }}</strong></div>
+            <div><small>Model Year</small><strong>{{ decoded.model_year }}</strong></div>
+            <div><small>Body Class</small><strong>{{ decoded.body_class|default:"-" }}</strong></div>
+            <div><small>Engine</small><strong>{{ decoded.engine|default:"-" }}</strong></div>
+            <div><small>Transmission</small><strong>{{ decoded.transmission|default:"-" }}</strong></div>
+            <div><small>Fuel Type</small><strong>{{ decoded.fuel_type|default:"-" }}</strong></div>
+            <div><small>Plant</small><strong>{{ decoded.plant|default:"-" }}</strong></div>
+        </div>
+    </div>
+    <div class="container center-results">
+        <section class="center-section">
+            <div class="center-section-head">
+                <div><p class="eyebrow">Parts requirement</p><h2>Required parts for this car</h2></div>
+                {% if user.is_staff or user.engineer_profile.is_verified %}<a href="{% url 'parts_catalogue' %}">Manage catalogue</a>{% endif %}
+            </div>
+            <p class="parts-guidance">Parts shown are internal requirements recorded for this VIN or matching vehicle. Confirm manufacturer fitment before purchase or installation.</p>
+            <div class="part-list">
+                {% for part in parts %}
+                <article class="required-part">
+                    <div class="requirement-tag {% if part.is_required %}needed{% endif %}">{% if part.is_required %}Required{% else %}Recommended{% endif %}</div>
+                    <div class="part-main">
+                        <small>{{ part.get_category_display }}</small>
+                        <h3>{{ part.part_name }}</h3>
+                        <p class="mono">{{ part.part_number }}</p>
+                    </div>
+                    <div class="part-fitment">
+                        <span>Fits</span><strong>{{ part.compatible_make }} {{ part.compatible_model }}</strong>
+                        {% if part.year_from or part.year_to %}<small>{{ part.year_from|default:"Any" }} - {{ part.year_to|default:"Present" }}</small>{% endif %}
+                        {% if part.engine_or_variant %}<small>{{ part.engine_or_variant }}</small>{% endif %}
+                    </div>
+                    <div class="part-qty"><span>Qty</span><strong>{{ part.quantity }}</strong></div>
+                </article>
+                {% empty %}
+                <div class="empty-state center-empty"><h3>No registered required parts found</h3><p>No internal parts record currently matches this VIN or decoded vehicle.</p></div>
+                {% endfor %}
+            </div>
+        </section>
+        <section class="center-section">
+            <div class="center-section-head">
+                <div><p class="eyebrow">Engineering references</p><h2>Compatible diagnostic files</h2></div>
+                {% if user.is_staff or user.engineer_profile.is_verified %}<a href="{% url 'diagnostic_file_library' %}">Manage files</a>{% endif %}
+            </div>
+            <p class="center-disclaimer">These file references are for technician verification. File access stays restricted to approved engineers and administrators.</p>
+            <div class="compatibility-files">
+                {% for asset in diagnostic_files %}
+                <article class="compat-file">
+                    <span class="file-pill {{ asset.file_type }}">{{ asset.get_file_type_display }}</span>
+                    <h3>{{ asset.ecu_name }}</h3>
+                    <p>{{ asset.compatible_brand }} {{ asset.compatible_models }}{% if asset.year_range %} | {{ asset.year_range }}{% endif %}</p>
+                    {% if asset.ecu_part_number %}<strong class="mono">{{ asset.ecu_part_number }}</strong>{% endif %}
+                    {% if user.is_staff or user.engineer_profile.is_verified %}<a href="{% url 'diagnostic_file_detail' asset.pk %}">View technical record</a>{% endif %}
+                </article>
+                {% empty %}
+                <div class="empty-state center-empty"><h3>No compatible engineering files registered</h3><p>No CBF, SMR-D or CFF record currently matches the decoded model.</p></div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

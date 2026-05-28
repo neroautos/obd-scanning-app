@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Engineer Registration | AutoMind Diagnostics{% endblock %}
+{% block content %}
+<section class="form-page">
+    <div class="form-card">
+        <p class="eyebrow">Engineer network</p>
+        <h1>Apply as an automobile engineer</h1>
+        <p class="muted">Applications are reviewed by our operations team before jobs can be assigned. A valid government-issued ID document is required for verification.</p>
+        <div class="verification-note"><strong>Required identification</strong><span>Upload a clear copy of your NIN slip, driver's licence, passport, voter's card or other government ID. Your document is visible only to authorized administrators.</span></div>
+        <form method="post" enctype="multipart/form-data" class="styled-form grid-form">
+            {% csrf_token %}{{ form.non_field_errors }}
+            {% for field in form %}
+                <label>{{ field.label }}{{ field }}{{ field.errors }}{% if field.help_text %}<small>{{ field.help_text|safe }}</small>{% endif %}</label>
+            {% endfor %}
+            <button class="button primary full-row" type="submit">Submit engineer application</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

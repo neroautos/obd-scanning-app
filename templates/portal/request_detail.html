@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Request {{ job.vehicle_registration_number }} | AutoMind Diagnostics{% endblock %}
+{% block content %}
+<section class="dashboard container">
+    <div class="dashboard-head">
+        <div><p class="eyebrow">Repair request</p><h1>{{ job.vehicle_registration_number }}</h1><p class="muted">{{ job.car_brand }} {{ job.car_model }} ({{ job.year }}) | VIN <span class="mono">{{ job.vin_number }}</span></p></div>
+        <span class="badge {{ job.status }}">{{ job.get_status_display }}</span>
+    </div>
+    <div class="detail-grid">
+        <div class="panel">
+            <h2>Reported problem</h2>
+            <p>{{ job.problem_description|linebreaksbr }}</p>
+            <dl>
+                <dt>Urgency</dt><dd>{{ job.get_urgency_display }}</dd>
+                <dt>Location</dt><dd>{{ job.state }}, {{ job.city }}</dd>
+                <dt>Submitted</dt><dd>{{ job.created_at|date:"d M Y, H:i" }}</dd>
+                <dt>Engineer</dt><dd>{{ job.assigned_engineer|default:"Awaiting assignment" }}</dd>
+            </dl>
+            {% if job.attachment %}<a class="button secondary" href="{% url 'request_attachment' job.pk %}">Download uploaded media</a>{% endif %}
+        </div>
+        <div class="panel">
+            <h2>Actions</h2>
+            {% if user.is_staff %}
+                <a class="button primary full" href="{% url 'assign_request' job.pk %}">Assign engineer</a>
+            {% elif user.engineer_profile and job.assigned_engineer == user.engineer_profile %}
+                <a class="button primary full" href="{% url 'update_job_status' job.pk %}">Update status</a>
+                <a class="button secondary full" href="{% url 'add_workshop_record' %}">Add workshop record</a>
+                <a class="button secondary full" href="{% url 'add_ecu_record' %}">Add ECU record</a>
+            {% else %}
+                <p class="muted">Status changes will appear here as your request is handled.</p>
+            {% endif %}
+        </div>
+    </div>
+    {% if records_visible %}
+    <div class="detail-grid">
+        <div class="panel"><h2>Workshop records</h2>{% for record in job.workshop_records.all %}<p><strong>{{ record.service_date }}</strong> - {{ record.work_done|truncatechars:120 }}</p>{% empty %}<p class="muted">No workshop entries yet.</p>{% endfor %}</div>
+        <div class="panel"><h2>Mercedes ECU records</h2>{% for record in job.ecu_records.all %}<p><strong>{{ record.ecu_name }}</strong> - {{ record.get_tool_used_display }}</p>{% empty %}<p class="muted">No ECU entries yet.</p>{% endfor %}</div>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

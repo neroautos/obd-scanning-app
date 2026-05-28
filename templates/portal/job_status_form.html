@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Update Job Status | AutoMind Diagnostics{% endblock %}
+{% block content %}
+<section class="form-page">
+    <div class="form-card narrow">
+        <p class="eyebrow">Engineer update</p>
+        <h1>{{ job.vehicle_registration_number }}</h1>
+        <form method="post" class="styled-form">
+            {% csrf_token %}{{ form.as_p }}
+            <button class="button primary full" type="submit">Update status</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

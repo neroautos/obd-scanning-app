@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Engineer Dashboard | AutoMind Diagnostics{% endblock %}
+{% block content %}
+<section class="command-dashboard">
+    <div class="container">
+        <div class="command-header engineer">
+            <div><p class="eyebrow">Engineer dispatch hub</p><h1>{{ engineer.full_name }}</h1><p>{{ engineer.specialization }} | {{ engineer.state }}, {{ engineer.city }}</p></div>
+            <span class="api-status {% if engineer.is_verified %}online{% else %}offline{% endif %}">{{ engineer.get_verification_status_display }}</span>
+        </div>
+        {% if not engineer.is_verified %}
+            <div class="panel waiting-panel">
+                {% if engineer.verification_status == "rejected" %}
+                    <h2>Your application was not approved</h2><p>Your ID verification was rejected. Contact AutoMind administration to correct or replace your verification information.</p>
+                {% else %}
+                    <h2>Your identity verification is in review</h2><p>An administrator will review your uploaded ID before dispatch assignments and workshop tools become available.</p>
+                {% endif %}
+            </div>
+        {% else %}
+        <div class="metric-grid">
+            <div class="metric"><span>Jobs assigned</span><strong>{{ jobs|length }}</strong><small>All allocations</small></div>
+            <div class="metric accent"><span>Active jobs</span><strong>{{ active_jobs }}</strong><small>Need attention</small></div>
+            <div class="metric"><span>Completed</span><strong>{{ completed_jobs }}</strong><small>Finished service</small></div>
+            <div class="metric"><span>Availability</span><strong class="status-word">{% if engineer.is_available %}Online{% else %}Paused{% endif %}</strong><a href="{% url 'update_availability' %}">Change status</a></div>
+        </div>
+        <div class="panel jobs-panel">
+            <div class="panel-heading"><h2>Dispatch assignments</h2><div><a href="{% url 'workshop_records' %}">Workshop</a> <a href="{% url 'ecu_records' %}">ECU storage</a> <a href="{% url 'diagnostic_file_library' %}">CBF / SMR-D / CFF</a></div></div>
+            <div class="job-list">
+            {% for job in jobs %}
+                <a class="job-item" href="{% url 'request_detail' job.pk %}">
+                    <span class="priority {{ job.urgency }}"></span>
+                    <div><strong>{{ job.vehicle_registration_number }} - {{ job.customer.full_name }}</strong><small>{{ job.state }}, {{ job.city }} | {{ job.car_brand }} {{ job.car_model }}</small></div>
+                    <span class="badge {{ job.status }}">{{ job.get_status_display }}</span>
+                </a>
+            {% empty %}<div class="empty-state"><h3>No assigned jobs</h3><p>New jobs routed to you will appear here.</p></div>{% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

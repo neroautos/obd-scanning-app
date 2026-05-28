@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Workshop Records | AutoMind Diagnostics{% endblock %}
+{% block content %}
+<section class="dashboard container">
+    <div class="dashboard-head">
+        <div><p class="eyebrow">Service storage</p><h1>Workshop records</h1></div>
+        <a class="button primary" href="{% url 'add_workshop_record' %}">New record</a>
+    </div>
+    <div class="panel"><div class="table-wrap"><table><thead><tr><th>Vehicle / VIN</th><th>Customer</th><th>Service date</th><th>Next service</th><th>Engineer</th><th>Cost</th></tr></thead><tbody>
+        {% for record in records %}<tr><td>{{ record.vehicle_registration_number }}<small class="mono">{{ record.vin }}</small></td><td>{{ record.customer_name }}<small>{{ record.contact_number }}</small></td><td>{{ record.service_date }}</td><td>{{ record.next_service_date|default:"-" }}</td><td>{{ record.engineer_assigned|default:"-" }}</td><td>NGN {{ record.cost }}</td></tr>
+        {% empty %}<tr><td colspan="6" class="empty">No workshop records have been created.</td></tr>{% endfor %}
+    </tbody></table></div></div>
+</section>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}AutoMind Diagnostics{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/site.css' %}?v=20260528-white-site">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navbar container">
+            <a class="brand" href="{% url 'home' %}">
+                <img class="brand-logo brand-logo-full" src="{% static 'images/automind-logo.svg' %}?v=20260528-white-site" alt="AutoMind Diagnostics">
+            </a>
+            <button class="nav-toggle" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">Menu</button>
+            <div class="nav-links">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'home' %}#services">Services</a>
+                <a href="{% url 'home' %}#resources">Resources</a>
+                {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                        <a href="{% url 'operations_dashboard' %}">Admin Dashboard</a>
+                        <a href="{% url 'workshop_records' %}">Workshop Records</a>
+                        <a href="{% url 'ecu_records' %}">Mercedes ECU Records</a>
+                        <a href="{% url 'parts_catalogue' %}">Parts Catalogue</a>
+                    {% elif user.customer_profile %}
+                        <a href="{% url 'customer_dashboard' %}">Customer Dashboard</a>
+                        <a href="{% url 'request_help' %}">Request Help</a>
+                    {% elif user.engineer_profile %}
+                        <a href="{% url 'engineer_dashboard' %}">Engineer Dashboard</a>
+                        {% if user.engineer_profile.is_verified %}
+                            <a href="{% url 'workshop_records' %}">Workshop Records</a>
+                            <a href="{% url 'ecu_records' %}">Mercedes ECU Records</a>
+                            <a href="{% url 'parts_catalogue' %}">Parts Catalogue</a>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+                <a href="{% url 'vin_decoder' %}">VIN Decoder</a>
+                <a href="{% url 'diagnostic_file_library' %}">ECU Files</a>
+                {% if user.is_authenticated %}
+                    <form action="{% url 'logout' %}" method="post" class="inline-form">
+                        {% csrf_token %}<button class="nav-button" type="submit">Logout</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}">Login</a>
+                    <a class="nav-button" href="{% url 'register_customer' %}">Register</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+    {% if messages %}
+        <div class="container messages">
+            {% for message in messages %}<div class="alert {{ message.tags }}">{{ message }}</div>{% endfor %}
+        </div>
+    {% endif %}
+    <main>{% block content %}{% endblock %}</main>
+    <footer class="footer">
+        <div class="container">AutoMind Diagnostics | Nationwide automobile diagnostics support</div>
+    </footer>
+</body>
+</html>

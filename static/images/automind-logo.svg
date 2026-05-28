@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 112" role="img" aria-label="AutoMind Diagnostics">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="12" x2="140" y2="98" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff3c4"/>
+      <stop offset=".48" stop-color="#e8aa42"/>
+      <stop offset="1" stop-color="#b86f12"/>
+    </linearGradient>
+    <linearGradient id="silver" x1="12" y1="20" x2="135" y2="92" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset=".5" stop-color="#dce8ef"/>
+      <stop offset="1" stop-color="#8ea5b3"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="url(#gold)" stroke-width="11" d="M20 74 48 24l28 50"/>
+    <path stroke="#ffffff" stroke-width="5.8" d="M37.5 58h21"/>
+    <path stroke="url(#silver)" stroke-width="7" d="M83 74V29l25 31 25-31v45"/>
+    <path stroke="#ffffff" stroke-width="4.4" d="M16 84c32 15 92 15 132 0"/>
+    <path stroke="url(#gold)" stroke-width="4.4" d="M24 20h32m89 0h34"/>
+    <circle cx="176" cy="20" r="5.3" fill="#e8aa42" stroke="none"/>
+  </g>
+  <g fill="#ffffff" font-family="Segoe UI, Arial, sans-serif">
+    <text x="202" y="58" font-size="50" font-weight="850" letter-spacing="-1.6">
+      AutoMind Diagnostics
+    </text>
+    <text x="205" y="86" font-size="14" font-weight="750" letter-spacing="6.8" fill="#f2c46d">
+      ADVANCED AUTOMOTIVE SUPPORT
+    </text>
+  </g>
+  <path fill="#e8aa42" d="M205 96h260v3.4H205z"/>
+  <path fill="#ffffff" opacity=".68" d="M486 96h118v3.4H486z"/>
+  <path fill="#e8aa42" opacity=".55" d="M626 96h78v3.4h-78z"/>
+</svg>

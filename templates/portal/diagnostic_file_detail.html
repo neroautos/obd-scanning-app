@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{ asset.original_file_name }} | Diagnostic File Library{% endblock %}
+{% block content %}
+<section class="file-library">
+    <div class="container">
+        <div class="asset-detail-head">
+            <div>
+                <span class="file-pill {{ asset.file_type }}">{{ asset.get_file_type_display }}</span>
+                <h1>{{ asset.ecu_name }}</h1>
+                <p class="mono">{{ asset.original_file_name }}</p>
+            </div>
+            <a class="button primary" href="{% url 'download_diagnostic_file' asset.pk %}">Download file</a>
+        </div>
+        <div class="asset-detail-grid">
+            <div class="panel">
+                <h2>Confirmed compatibility</h2>
+                <dl class="asset-dl">
+                    <dt>Vehicle</dt><dd>{{ asset.compatible_brand }} {{ asset.compatible_models }}</dd>
+                    <dt>Year range</dt><dd>{{ asset.year_range|default:"Not recorded" }}</dd>
+                    <dt>Engine / Variant</dt><dd>{{ asset.engine_or_variant|default:"Not recorded" }}</dd>
+                    <dt>ECU part no.</dt><dd class="mono">{{ asset.ecu_part_number|default:"Not recorded" }}</dd>
+                    <dt>Hardware no.</dt><dd class="mono">{{ asset.hardware_number|default:"Not recorded" }}</dd>
+                    <dt>Software no.</dt><dd class="mono">{{ asset.software_number|default:"Not recorded" }}</dd>
+                    <dt>Tool</dt><dd>{{ asset.diagnostic_tool|default:"Not recorded" }}</dd>
+                </dl>
+                {% if asset.compatibility_notes %}<h3>Workshop notes</h3><p>{{ asset.compatibility_notes|linebreaksbr }}</p>{% endif %}
+            </div>
+            <aside class="panel text-preview">
+                <h2>Readable file signatures</h2>
+                <p class="muted">Automatically extracted readable text for technical reference only. It is not a complete CBF/SMR-D/CFF parser.</p>
+                {% if asset.extracted_text_preview %}
+                <pre>{{ asset.extracted_text_preview }}</pre>
+                {% else %}
+                <div class="empty-preview">No readable identification text was detected in this file.</div>
+                {% endif %}
+            </aside>
+        </div>
+    </div>
+</section>
+{% endblock %}

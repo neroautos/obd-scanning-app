@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Customer Dashboard | AutoMind Diagnostics{% endblock %}
+{% block content %}
+<section class="command-dashboard">
+    <div class="container">
+        <div class="command-header customer premium-command">
+            <div>
+                <p class="eyebrow">Customer control center</p>
+                <h1>Hello{% if profile.full_name %}, {{ profile.full_name }}{% endif %}</h1>
+                {% if profile_ready %}
+                <p>{{ profile.vehicle_brand }} {{ profile.vehicle_model }} ({{ profile.vehicle_year|default:"Year not set" }}) | {{ profile.state|default:"Location not set" }}{% if profile.city %}, {{ profile.city }}{% endif %}</p>
+                {% else %}
+                <p>Your account is ready. Add vehicle details when you want faster request forms.</p>
+                {% endif %}
+            </div>
+            <div class="header-actions">
+                <a class="button light" href="{% url 'customer_profile' %}">Edit profile</a>
+                <a class="button light" href="{% url 'vin_decoder' %}">VIN Center</a>
+                <a class="button primary" href="{% url 'request_help' %}">New help request</a>
+            </div>
+        </div>
+        <div class="dashboard-service-nav">
+            <a href="{% url 'request_help' %}"><small>Service</small><strong>Request diagnostics</strong><span>Describe a vehicle issue</span></a>
+            <a href="{% url 'vin_decoder' %}"><small>Vehicle data</small><strong>VIN Decoder</strong><span>Identity and matching records</span></a>
+            <a href="{% url 'customer_profile' %}"><small>Profile</small><strong>My vehicle</strong><span>Update saved details</span></a>
+        </div>
+        <div class="metric-grid">
+            <div class="metric"><span>All requests</span><strong>{{ jobs|length }}</strong><small>Total submitted</small></div>
+            <div class="metric accent"><span>Active support</span><strong>{{ active_jobs }}</strong><small>Currently in workflow</small></div>
+            <div class="metric"><span>Completed</span><strong>{{ completed_jobs }}</strong><small>Service jobs closed</small></div>
+            <div class="metric vin"><span>Registered VIN</span><strong class="mono">{{ profile.vin_number|default:"Not added" }}</strong><small>{{ profile.phone_number|default:profile.email }}</small></div>
+        </div>
+        <div class="dashboard-columns">
+            <div class="panel jobs-panel">
+                <div class="panel-heading"><h2>Service request timeline</h2><a href="{% url 'request_help' %}">Submit issue</a></div>
+                <div class="job-list">
+                {% for job in jobs %}
+                    <a class="job-item" href="{% url 'request_detail' job.pk %}">
+                        <span class="priority {{ job.urgency }}"></span>
+                        <div><strong>{{ job.vehicle_registration_number }}</strong><small>{{ job.car_brand }} {{ job.car_model }} | {{ job.created_at|date:"d M Y" }}</small></div>
+                        <span class="badge {{ job.status }}">{{ job.get_status_display }}</span>
+                    </a>
+                {% empty %}<div class="empty-state"><h3>No service requests yet</h3><p>When your car needs attention, submit a diagnostic request here.</p></div>{% endfor %}
+                </div>
+            </div>
+            <aside class="panel vehicle-card">
+                <p class="eyebrow">Primary vehicle</p>
+                {% if profile_ready %}
+                <h2>{{ profile.vehicle_brand }} {{ profile.vehicle_model }}</h2>
+                <div class="vehicle-meta"><span>Model year<strong>{{ profile.vehicle_year|default:"-" }}</strong></span><span>City<strong>{{ profile.city|default:"-" }}</strong></span></div>
+                {% else %}
+                <h2>Add your vehicle</h2>
+                <p class="muted">Save your vehicle once to pre-fill future repair requests.</p>
+                <a class="button primary full" href="{% url 'customer_profile' %}">Complete profile</a>
+                {% endif %}
+                {% if latest_job %}<p class="muted">Latest update: <strong>{{ latest_job.get_status_display }}</strong></p>{% else %}<p class="muted">Your vehicle is ready for support whenever needed.</p>{% endif %}
+                <a class="button secondary full" href="{% url 'vin_decoder' %}">Open VIN Center</a>
+            </aside>
+        </div>
+    </div>
+</section>
+{% endblock %}

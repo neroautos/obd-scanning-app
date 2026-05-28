@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}CBF / SMR-D / CFF File Center | AutoMind Diagnostics{% endblock %}
+{% block content %}
+<section class="file-library">
+    <div class="container">
+        <div class="library-hero">
+            <div>
+                <p class="eyebrow">Mercedes engineering resources</p>
+                <h1>CBF / SMR-D / CFF File Center</h1>
+                <p>Upload, read and search diagnostic assets by ECU and confirmed vehicle compatibility, separate from individual workshop jobs.</p>
+            </div>
+            <a class="button primary" href="{% url 'add_diagnostic_file' %}">Upload CBF / SMR-D / CFF</a>
+        </div>
+        <div class="metric-grid library-metrics">
+            <div class="metric accent"><span>All files</span><strong>{{ counts.total }}</strong></div>
+            <div class="metric"><span>CBF definitions</span><strong>{{ counts.cbf }}</strong></div>
+            <div class="metric"><span>SMR-D definitions</span><strong>{{ counts.smr_d }}</strong></div>
+            <div class="metric"><span>CFF flash files</span><strong>{{ counts.cff }}</strong></div>
+        </div>
+        <form class="library-search panel" method="get">
+            <input class="form-control" type="search" name="search" value="{{ search_query }}" placeholder="Search ECU, part number, model, hardware or software number">
+            <select class="form-control" name="file_type">
+                <option value="">All file types</option>
+                <option value="cbf" {% if selected_type == "cbf" %}selected{% endif %}>CBF</option>
+                <option value="smr-d" {% if selected_type == "smr-d" %}selected{% endif %}>SMR-D</option>
+                <option value="cff" {% if selected_type == "cff" %}selected{% endif %}>CFF</option>
+            </select>
+            <button class="button primary" type="submit">Search library</button>
+        </form>
+        <div class="compatibility-note">
+            <strong>Compatibility guidance:</strong> vehicle fitment shown here is entered and confirmed by your workshop team. Any text preview extracted from an uploaded file is for reference and does not automatically prove compatibility.
+        </div>
+        <div class="asset-grid">
+        {% for asset in assets %}
+            <article class="asset-card">
+                <div class="asset-top">
+                    <span class="file-pill {{ asset.file_type }}">{{ asset.get_file_type_display }}</span>
+                    <small>{{ asset.created_at|date:"d M Y" }}</small>
+                </div>
+                <h2>{{ asset.ecu_name }}</h2>
+                <p class="asset-file mono">{{ asset.original_file_name }}</p>
+                <div class="asset-info">
+                    <span>Compatible vehicle<strong>{{ asset.compatible_brand }} {{ asset.compatible_models }}</strong></span>
+                    {% if asset.year_range %}<span>Years<strong>{{ asset.year_range }}</strong></span>{% endif %}
+                    {% if asset.hardware_number %}<span>Hardware<strong class="mono">{{ asset.hardware_number }}</strong></span>{% endif %}
+                </div>
+                <a href="{% url 'diagnostic_file_detail' asset.pk %}" class="button secondary full">Open details</a>
+            </article>
+        {% empty %}
+            <div class="panel empty-state full-grid"><h2>No diagnostic files found</h2><p>Upload a CBF, SMR-D or CFF file and add its verified compatible vehicle details.</p></div>
+        {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

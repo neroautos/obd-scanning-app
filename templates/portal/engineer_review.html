@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Verify Engineer | AutoMind Diagnostics{% endblock %}
+{% block content %}
+<section class="form-page">
+    <div class="form-card review-card">
+        <p class="eyebrow">Identity verification review</p>
+        <h1>{{ engineer.full_name }}</h1>
+        <div class="review-profile">
+            <div><small>Phone</small><strong>{{ engineer.phone_number }}</strong></div>
+            <div><small>Email</small><strong>{{ engineer.email }}</strong></div>
+            <div><small>Location</small><strong>{{ engineer.city }}, {{ engineer.state }}</strong></div>
+            <div><small>Specialization</small><strong>{{ engineer.specialization }}</strong></div>
+            <div><small>ID Type</small><strong>{{ engineer.get_id_type_display }}</strong></div>
+            <div><small>ID Number</small><strong class="mono">{{ engineer.id_number }}</strong></div>
+        </div>
+        {% if engineer.verification_document %}
+            <a class="button secondary" href="{% url 'download_engineer_id' engineer.pk %}">Download submitted ID document</a>
+        {% else %}
+            <div class="api-warning">No identity document was submitted. Do not approve this engineer until valid identification is received.</div>
+        {% endif %}
+        <form method="post" class="styled-form review-form">
+            {% csrf_token %}{{ form.non_field_errors }}
+            {% for field in form %}<label>{{ field.label }}{{ field }}{{ field.errors }}</label>{% endfor %}
+            <button class="button primary full" type="submit">Save verification decision</button>
+        </form>
+    </div>
+</section>
+{% endblock %}
